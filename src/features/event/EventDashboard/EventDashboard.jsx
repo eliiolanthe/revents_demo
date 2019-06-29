@@ -13,11 +13,24 @@ class EventDashboard extends Component {
     selectedEvent: null,
   };
 
-  toggleFormVisibility = () => {
-    this.setState(({ isOpen }) => ({
-      // destructured prev state
-      isOpen: !isOpen,
-    }));
+  // toggleFormVisibility = () => {
+  //   this.setState(({ isOpen }) => ({
+  //     // destructured prev state
+  //     isOpen: !isOpen,
+  //   }));
+  // };
+
+  handleCreateFormOpen = () => {
+    this.setState({
+      isOpen: true,
+      selectedEvent: null,
+    });
+  };
+
+  handleCreateFormCancel = () => {
+    this.setState({
+      isOpen: false,
+    });
   };
 
   handleCreateEvent = newEvent => {
@@ -29,23 +42,55 @@ class EventDashboard extends Component {
     }));
   };
 
+  handleSelectEvent = event => {
+    this.setState({
+      selectedEvent: event,
+      isOpen: true,
+    });
+  };
+
+  handleUpdateEvent = updatedEvent => {
+    this.setState(({ events }) => ({
+      events: events.map(event => {
+        if (event.id === updatedEvent.id) {
+          return { ...updatedEvent };
+        } else return event;
+      }),
+      isOpen: false,
+      selectedEvent: null,
+    }));
+  };
+
+  handleDeleteEvent = id => {
+    this.setState(({ events }) => ({
+      events: events.filter(event => event.id !== id),
+    }));
+  };
+
   render() {
-    const { events, isOpen } = this.state;
+    const { events, isOpen, selectedEvent } = this.state;
     return (
       <Grid>
         <Grid.Column width={10}>
-          <EventList events={events} />
+          <EventList
+            events={events}
+            selectEvent={this.handleSelectEvent}
+            deleteEvent={this.handleDeleteEvent}
+          />
         </Grid.Column>
         <Grid.Column width={6}>
           <Button
             positive
             content="Create Event"
-            onClick={this.toggleFormVisibility}
+            onClick={this.handleCreateFormOpen}
           />
           {isOpen && (
             <EventForm
+              key={selectedEvent ? selectedEvent.id : 0} // for updating
+              selectedEvent={selectedEvent}
               createEvent={this.handleCreateEvent}
-              cancelFormOpen={this.toggleFormVisibility}
+              cancelFormOpen={this.handleCreateFormCancel}
+              updateEvent={this.handleUpdateEvent}
             />
           )}
         </Grid.Column>

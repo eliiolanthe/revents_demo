@@ -7,8 +7,16 @@ class EventForm extends Component {
     date: '',
     venue: '',
     city: '',
-    host: '',
+    hostedBy: '',
   };
+
+  componentDidMount() {
+    if (this.props.selectedEvent !== null) {
+      this.setState({
+        ...this.props.selectedEvent,
+      });
+    }
+  }
 
   handleInputChange = ({ target: { name, value } }) => {
     this.setState({
@@ -18,12 +26,16 @@ class EventForm extends Component {
 
   handleFormSubmit = evt => {
     evt.preventDefault();
-    this.props.createEvent(this.state);
+    if (this.state.id) {
+      this.props.updateEvent(this.state);
+    } else {
+      this.props.createEvent(this.state);
+    }
   };
 
   render() {
     const { cancelFormOpen } = this.props;
-    const { title, date, venue, city, host } = this.state;
+    const { title, date, venue, city, hostedBy } = this.state;
 
     return (
       <Segment>
@@ -31,7 +43,7 @@ class EventForm extends Component {
           <Form.Field>
             <label>Event Title</label>
             <input
-              placeholder="First Name"
+              placeholder="Event Title"
               value={title}
               name="title"
               onChange={this.handleInputChange}
@@ -69,8 +81,8 @@ class EventForm extends Component {
             <label>Hosted By</label>
             <input
               placeholder="Enter the name of person hosting"
-              name="host"
-              value={host}
+              name="hostedBy"
+              value={hostedBy}
               onChange={this.handleInputChange}
             />
           </Form.Field>
