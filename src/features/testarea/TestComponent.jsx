@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import { incrementCounter, decrementCounter } from './testActions';
 import { Button } from 'semantic-ui-react';
 
+// state we pass is the same as store.getState()
 const mapStateToProps = state => ({
-  data: state.data,
+  data: state.test.data,
 });
 
 const mapDispatchToProps = {
